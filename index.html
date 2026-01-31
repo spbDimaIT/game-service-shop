@@ -1,0 +1,2691 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameServiceShop - Магазин услуг для Roblox</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #e60012; /* Roblox красный */
+            --secondary: #00a2ff;
+            --roblox: #e60012;
+            --success: #4CAF50;
+            --danger: #f44336;
+            --warning: #ff9800;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding-top: 0;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--roblox) 0%, #ff3366 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .logo i {
+            font-size: 2.2rem;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+        }
+        
+        nav a:hover {
+            opacity: 0.9;
+        }
+        
+        .hero {
+            padding: 4rem 0;
+            text-align: center;
+            background-color: white;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--roblox) 0%, #ff3366 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, var(--roblox) 0%, #ff3366 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #2e7d32 100%);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #c62828 100%);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #ef6c00 100%);
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 3rem;
+            color: var(--dark);
+            line-height: 1.2;
+        }
+        
+        .services-form-section, .admin-section, .payment-info-section, .check-upload-section {
+            padding: 5rem 0;
+        }
+        
+        .services-form-section, .payment-info-section, .check-upload-section {
+            background-color: white;
+        }
+        
+        .admin-section {
+            background-color: var(--light);
+        }
+        
+        .form-container, .admin-container, .payment-container, .upload-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 3rem;
+        }
+        
+        .payment-container {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e8f2ff 100%);
+            border: 3px solid var(--primary);
+        }
+        
+        .upload-container {
+            border: 3px solid var(--success);
+        }
+        
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--roblox);
+        }
+        
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .price-input {
+            position: relative;
+        }
+        
+        .price-input:after {
+            content: "₽";
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            color: var(--gray);
+        }
+        
+        .payment-info {
+            background-color: #ffe6ea;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            text-align: center;
+            border: 2px dashed var(--roblox);
+        }
+        
+        .payment-info i {
+            color: var(--roblox);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .payment-info h3 {
+            color: var(--roblox);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+        
+        .payment-info p {
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+        }
+        
+        .bank-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .bank-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            width: 350px;
+            box-shadow: 0 10px 30px rgba(230, 0, 18, 0.15);
+            border: 3px solid var(--roblox);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bank-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, var(--roblox) 0%, #ff3366 100%);
+        }
+        
+        .bank-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(230, 0, 18, 0.2);
+        }
+        
+        .bank-card h4 {
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.5rem;
+            line-height: 1.3;
+        }
+        
+        .bank-card .card-number {
+            font-family: 'Courier New', monospace;
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #fff0f2 0%, #ffe6ea 100%);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            letter-spacing: 2px;
+            color: var(--roblox);
+            border: 2px solid #ffd6dc;
+            line-height: 1.2;
+            word-break: break-word;
+        }
+        
+        .card-details {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: left;
+        }
+        
+        .card-details p {
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+            line-height: 1.4;
+        }
+        
+        .card-details strong {
+            color: var(--dark);
+            min-width: 120px;
+        }
+        
+        .copy-btn {
+            background: linear-gradient(135deg, var(--roblox) 0%, #ff3366 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            line-height: 1.2;
+        }
+        
+        .copy-btn:hover {
+            background: linear-gradient(135deg, #ff3366 0%, #ff6699 100%);
+            transform: translateY(-2px);
+        }
+        
+        .vtb-logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--roblox) 0%, #ff3366 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(230, 0, 18, 0.3);
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light-gray);
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .admin-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .admin-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: var(--light);
+            padding: 8px 15px;
+            border-radius: 50px;
+            white-space: nowrap;
+        }
+        
+        .admin-user i {
+            color: var(--roblox);
+        }
+        
+        .requests-list {
+            margin-top: 2rem;
+        }
+        
+        .request-item {
+            background-color: var(--light);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--roblox);
+        }
+        
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .request-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1.3;
+        }
+        
+        .request-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--success);
+            white-space: nowrap;
+        }
+        
+        .request-description {
+            color: var(--gray);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        
+        .request-contact {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            flex-wrap: wrap;
+        }
+        
+        .request-contact i {
+            color: var(--roblox);
+            margin-top: 3px;
+        }
+        
+        .request-contact span {
+            line-height: 1.4;
+        }
+        
+        .request-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .request-status {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            white-space: nowrap;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-waiting-payment {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+        
+        .status-payment-received {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-in-progress {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .status-completed {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .payment-proof-section {
+            background-color: #fff3cd;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .payment-proof-section h4 {
+            margin-bottom: 0.5rem;
+            color: #856404;
+            line-height: 1.3;
+        }
+        
+        .proof-images {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .proof-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .proof-image:hover {
+            border-color: var(--roblox);
+        }
+        
+        .upload-area {
+            background-color: #f8f9fa;
+            border: 3px dashed #dee2e6;
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            margin: 2rem 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .upload-area:hover {
+            background-color: #e9ecef;
+            border-color: var(--roblox);
+        }
+        
+        .upload-area i {
+            font-size: 4rem;
+            color: var(--roblox);
+            margin-bottom: 1rem;
+        }
+        
+        .upload-area input {
+            display: none;
+        }
+        
+        .upload-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .preview-image {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid var(--roblox);
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        
+        .copyright {
+            margin-top: 2rem;
+            width: 100%;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            max-width: 350px;
+            word-wrap: break-word;
+        }
+        
+        .notification-success {
+            background-color: var(--success);
+        }
+        
+        .notification-error {
+            background-color: var(--danger);
+        }
+        
+        .notification-info {
+            background-color: var(--secondary);
+        }
+        
+        .password-input {
+            position: relative;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+        }
+        
+        .login-icon {
+            font-size: 3rem;
+            color: var(--roblox);
+            margin-bottom: 1.5rem;
+        }
+        
+        .login-title {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: var(--dark);
+            line-height: 1.3;
+        }
+        
+        .instructions {
+            background-color: #ffe6ea;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .instructions ol {
+            margin-left: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .instructions li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+        
+        .instructions h3 {
+            color: var(--roblox);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+        
+        /* Окно чата */
+        .chat-window {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 3px solid var(--roblox);
+            transform: translateY(20px);
+            opacity: 0;
+            visibility: hidden;
+            transition: transform 0.3s, opacity 0.3s, visibility 0.3s;
+        }
+        
+        .chat-window.active {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, var(--roblox) 0%, #ff3366 100%);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .chat-header h4 {
+            margin: 0;
+            color: white;
+            line-height: 1.3;
+            font-size: 1.1rem;
+        }
+        
+        .close-chat {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+        
+        .close-chat:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .message {
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+            line-height: 1.4;
+            font-size: 0.9rem;
+        }
+        
+        .message-user {
+            background-color: #ffe6ea;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .message-admin {
+            background-color: #d4edda;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .message-system {
+            background-color: #fff3cd;
+            align-self: center;
+            text-align: center;
+            font-style: italic;
+            font-size: 0.8rem;
+            padding: 8px 12px;
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--gray);
+            margin-top: 5px;
+            text-align: right;
+        }
+        
+        .chat-input-container {
+            padding: 1rem;
+            border-top: 1px solid var(--light-gray);
+            background: white;
+        }
+        
+        .chat-order-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .chat-order-input input {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input-area textarea {
+            flex: 1;
+            min-height: 60px;
+            resize: none;
+            font-size: 0.9rem;
+        }
+        
+        .chat-input-area button {
+            min-width: 50px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Иконка чата */
+        .chat-icon {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--roblox) 0%, #ff3366 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(230, 0, 18, 0.3);
+            z-index: 1000;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .chat-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(230, 0, 18, 0.4);
+        }
+        
+        .chat-icon .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            nav ul {
+                gap: 15px;
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .form-container, .admin-container, .payment-container, .upload-container {
+                padding: 2rem;
+            }
+            
+            .bank-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .bank-card {
+                width: 100%;
+                padding: 1.5rem;
+            }
+            
+            .bank-card .card-number {
+                font-size: 1.5rem;
+                padding: 12px;
+            }
+            
+            .admin-controls {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+            
+            .request-actions {
+                flex-direction: column;
+            }
+            
+            .request-actions button {
+                width: 100%;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            .chat-icon {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+            
+            .chat-window {
+                width: 90%;
+                height: 70vh;
+                right: 5%;
+                bottom: 80px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .form-container, .admin-container, .payment-container, .upload-container {
+                padding: 1.5rem;
+            }
+            
+            .bank-card .card-number {
+                font-size: 1.2rem;
+                letter-spacing: 1px;
+            }
+            
+            .card-details p {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .card-details strong {
+                min-width: auto;
+            }
+            
+            .chat-window {
+                height: 80vh;
+                bottom: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Иконка чата -->
+    <div class="chat-icon" onclick="toggleChatWindow()">
+        <i class="fas fa-comments"></i>
+        <div class="badge hidden" id="unreadMessagesBadge">0</div>
+    </div>
+    
+    <!-- Окно чата -->
+    <div id="chatWindow" class="chat-window hidden">
+        <div class="chat-header">
+            <h4>Чат с администратором</h4>
+            <button class="close-chat" onclick="toggleChatWindow()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div id="chatMessages" class="chat-messages">
+            <div class="message message-system">
+                Введите номер вашего заказа для начала общения
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <div class="chat-order-input">
+                <input type="number" id="chatOrderId" placeholder="Номер заказа" min="1" onchange="loadChat()">
+                <button onclick="loadChat()" class="btn" style="padding: 10px 15px; font-size: 0.9rem;">
+                    <i class="fas fa-comment"></i> Загрузить
+                </button>
+            </div>
+            
+            <div id="chatInputArea" class="hidden">
+                <div class="chat-input-area">
+                    <textarea id="chatMessageInput" placeholder="Введите ваше сообщение..." rows="2"></textarea>
+                    <button onclick="sendMessage()" class="btn" style="padding: 10px;">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div style="margin-top: 5px; font-size: 0.8rem; color: var(--gray); text-align: center;">
+                    Заказ #<span id="currentOrderId">0</span> • <span id="chatOrderStatus">Не загружен</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-robot"></i>
+                <span>RobloxServiceShop</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#order">Заказать услугу</a></li>
+                    <li><a href="#payment">Оплата</a></li>
+                    <li><a href="#check-upload">Отправить чек</a></li>
+                    <li><a href="#admin-login">Админ-панель</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="container">
+            <h1>Профессиональные услуги для Roblox</h1>
+            <p>Закажите услуги для Roblox с простой оплатой на карту ВТБ. Скрипты, модели, помощь в создании игр, прокачка аккаунтов и многое другое!</p>
+            <a href="#order" class="btn">Заказать услугу</a>
+        </div>
+    </section>
+    
+    <section id="order" class="services-form-section">
+        <div class="container">
+            <h2 class="section-title">Заказ услуги для Roblox</h2>
+            <div class="form-container">
+                <div class="instructions">
+                    <h3><i class="fas fa-info-circle"></i> Как это работает:</h3>
+                    <ol>
+                        <li>Вы заполняете заявку на услугу для Roblox</li>
+                        <li>Я (администратор) подтверждаю заказ</li>
+                        <li>Вы оплачиваете на карту ВТБ</li>
+                        <li>Отправляете скриншот чека через специальную форму</li>
+                        <li>Для общения нажмите на иконку чата в правом нижнем углу</li>
+                    </ol>
+                </div>
+                
+                <form id="serviceRequestForm">
+                    <div class="form-group">
+                        <label for="serviceName">Что нужно сделать? *</label>
+                        <input type="text" id="serviceName" placeholder="Например: Написать скрипт для игры, создать модель, помочь с разработкой" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="gamePlace">Ссылка на плейс в Roblox *</label>
+                        <input type="text" id="gamePlace" placeholder="https://www.roblox.com/games/123456789/My-Game" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="serviceDescription">Подробное описание *</label>
+                        <textarea id="serviceDescription" placeholder="Опишите что именно нужно сделать, требования, сроки, особые пожелания..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="price">Стоимость (рублей) *</label>
+                        <div class="price-input">
+                            <input type="number" id="price" min="100" step="50" placeholder="1000" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="customerName">Ваше имя *</label>
+                        <input type="text" id="customerName" placeholder="Иван Иванов" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="customerEmail">Ваш Email *</label>
+                        <input type="email" id="customerEmail" placeholder="email@example.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contactType">Как с вами связаться? *</label>
+                        <select id="contactType" required>
+                            <option value="">Выберите способ</option>
+                            <option value="discord">Discord</option>
+                            <option value="telegram">Telegram</option>
+                            <option value="email">Email</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contactInfo">Ваши контакты *</label>
+                        <input type="text" id="contactInfo" placeholder="@username или email@example.com" required>
+                    </div>
+                    
+                    <div class="payment-info">
+                        <i class="fas fa-credit-card"></i>
+                        <h3>Оплата на карту ВТБ</h3>
+                        <p>После подтверждения заказа вы получите реквизиты карты ВТБ для оплаты. После оплаты отправьте чек через форму "Отправить чек".</p>
+                        <p style="margin-top: 10px; font-weight: bold; color: var(--roblox);">
+                            Для общения нажмите на иконку чата <i class="fas fa-comments"></i> в правом нижнем углу
+                        </p>
+                    </div>
+                    
+                    <button type="submit" class="btn" style="width: 100%; margin-top: 1.5rem;">
+                        <i class="fas fa-paper-plane"></i> Отправить заявку
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <section id="payment" class="payment-info-section">
+        <div class="container">
+            <h2 class="section-title">Реквизиты для оплаты</h2>
+            <div class="payment-container">
+                <div class="instructions">
+                    <h3><i class="fas fa-money-check-alt"></i> Инструкция по оплате:</h3>
+                    <ol>
+                        <li>Дождитесь подтверждения вашей заявки</li>
+                        <li>Переведите деньги на карту ВТБ указанную ниже</li>
+                        <li>Обязательно укажите номер заказа в комментарии к переводу!</li>
+                        <li>После оплаты перейдите в раздел "Отправить чек"</li>
+                        <li>Загрузите скриншот чека об оплате</li>
+                        <li>Для общения нажмите на иконку чата в правом нижнем углу</li>
+                    </ol>
+                </div>
+                
+                <div class="bank-cards">
+                    <div class="bank-card">
+                        <h4>
+                            <div class="vtb-logo">ВТБ</div>
+                            Карта ВТБ
+                        </h4>
+                        <div class="card-number" id="vtb-card">2202 2001 2345 6789</div>
+                        
+                        <div class="card-details">
+                            <p>
+                                <strong>Номер карты:</strong>
+                                <span id="vtb-card-plain">2202200123456789</span>
+                            </p>
+                            <p>
+                                <strong>Получатель:</strong>
+                                <span>Иван И. (Измените в админке)</span>
+                            </p>
+                            <p>
+                                <strong>Тип карты:</strong>
+                                <span>Visa / Mastercard</span>
+                            </p>
+                            <p>
+                                <strong>Банк:</strong>
+                                <span>ВТБ Банк</span>
+                            </p>
+                        </div>
+                        
+                        <button class="copy-btn" onclick="copyCardNumber()">
+                            <i class="fas fa-copy"></i> Скопировать номер карты
+                        </button>
+                        
+                        <button class="copy-btn" onclick="copyAllDetails()" style="margin-top: 10px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                            <i class="fas fa-copy"></i> Скопировать все реквизиты
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="payment-info">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <h3>Важно!</h3>
+                    <p>После оплаты обязательно отправьте скриншот чека через форму "Отправить чек". Без подтверждения оплаты заказ не будет выполнен.</p>
+                    <p style="margin-top: 15px; font-weight: bold; color: var(--roblox); font-size: 1.1rem; line-height: 1.4;">
+                        В комментарии к переводу укажите: <span id="order-comment" style="background: #fff3cd; padding: 5px 10px; border-radius: 5px; display: inline-block; margin-top: 5px;">Заказ №</span>
+                    </p>
+                    <p style="margin-top: 10px; font-weight: bold; color: var(--roblox);">
+                        Для вопросов по заказу используйте чат <i class="fas fa-comments"></i>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="check-upload" class="check-upload-section">
+        <div class="container">
+            <h2 class="section-title">Отправить скриншот чека</h2>
+            <div class="upload-container">
+                <div class="instructions">
+                    <h3><i class="fas fa-upload"></i> Загрузка чека об оплате</h3>
+                    <p>Загрузите скриншот чека об оплате вашего заказа. Администратор проверит его и подтвердит оплату.</p>
+                    <p style="margin-top: 10px; font-weight: bold; color: var(--roblox);">
+                        После отправки чека вы можете обсудить детали в чате <i class="fas fa-comments"></i>
+                    </p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="uploadOrderId">Номер вашего заказа *</label>
+                    <input type="number" id="uploadOrderId" placeholder="Введите номер заказа, который вы получили" min="1" required>
+                </div>
+                
+                <div class="upload-area" onclick="document.getElementById('checkUpload').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Нажмите для загрузки скриншота</h3>
+                    <p>Перетащите файл или нажмите для выбора</p>
+                    <p style="color: var(--gray); font-size: 0.9rem; margin-top: 10px; line-height: 1.4;">
+                        Поддерживаются: JPG, PNG, GIF (макс. 5MB)
+                    </p>
+                    <input type="file" id="checkUpload" accept="image/*" onchange="handleCheckUpload()" style="display: none;">
+                </div>
+                
+                <div id="uploadPreview" class="upload-preview hidden">
+                    <h4>Предпросмотр:</h4>
+                    <img id="previewImage" class="preview-image">
+                </div>
+                
+                <div id="uploadActions" class="hidden">
+                    <button onclick="submitCheck()" class="btn btn-success" style="width: 100%; margin-top: 1rem;">
+                        <i class="fas fa-paper-plane"></i> Отправить чек
+                    </button>
+                    <button onclick="cancelUpload()" class="btn btn-danger" style="width: 100%; margin-top: 1rem;">
+                        <i class="fas fa-times"></i> Отменить
+                    </button>
+                </div>
+                
+                <div id="uploadSuccess" class="hidden" style="text-align: center; padding: 2rem;">
+                    <i class="fas fa-check-circle" style="font-size: 4rem; color: var(--success); margin-bottom: 1rem;"></i>
+                    <h3>Чек успешно отправлен!</h3>
+                    <p>Администратор проверит ваш чек в ближайшее время.</p>
+                    <p style="margin-top: 1rem; font-weight: bold; color: var(--roblox);">
+                        Для обсуждения деталей нажмите на иконку чата <i class="fas fa-comments"></i>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="admin-login" class="admin-section">
+        <div class="container">
+            <h2 class="section-title">Панель управления</h2>
+            <div class="admin-container">
+                <div id="adminLoginForm">
+                    <div class="login-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3 class="login-title">Вход для администратора</h3>
+                    
+                    <div class="form-group">
+                        <label for="adminPassword">Пароль администратора</label>
+                        <div class="password-input">
+                            <input type="password" id="adminPassword" placeholder="Введите пароль" required>
+                            <button type="button" class="password-toggle" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button onclick="loginAdmin()" class="btn" style="width: 100%; margin-bottom: 1rem;">
+                        <i class="fas fa-sign-in-alt"></i> Войти
+                    </button>
+                    
+                    <button onclick="showChangePasswordForm()" class="btn btn-success" style="width: 100%;">
+                        <i class="fas fa-cog"></i> Изменить пароль
+                    </button>
+                </div>
+                
+                <!-- Форма смены пароля -->
+                <div id="changePasswordForm" class="hidden">
+                    <div class="login-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <h3 class="login-title">Изменение пароля</h3>
+                    
+                    <div class="form-group">
+                        <label for="oldPassword">Старый пароль *</label>
+                        <div class="password-input">
+                            <input type="password" id="oldPassword" placeholder="Введите старый пароль" required>
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('oldPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="newPassword">Новый пароль *</label>
+                        <div class="password-input">
+                            <input type="password" id="newPassword" placeholder="Введите новый пароль (минимум 6 символов)" required>
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('newPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">Подтвердите новый пароль *</label>
+                        <div class="password-input">
+                            <input type="password" id="confirmPassword" placeholder="Повторите новый пароль" required>
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility('confirmPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="request-actions" style="margin-top: 2rem;">
+                        <button onclick="changeAdminPassword()" class="btn btn-success" style="flex: 1;">
+                            <i class="fas fa-check"></i> Изменить пароль
+                        </button>
+                        <button onclick="cancelChangePassword()" class="btn btn-danger" style="flex: 1;">
+                            <i class="fas fa-times"></i> Отмена
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="adminPanel" class="hidden">
+                    <div class="admin-header">
+                        <h3 style="margin: 0;">Управление заказами Roblox</h3>
+                        <div class="admin-controls">
+                            <div class="admin-user">
+                                <i class="fas fa-user-shield"></i>
+                                <span>Администратор</span>
+                            </div>
+                            <div style="white-space: nowrap;">
+                                <span id="requestCount">0</span> заказов
+                            </div>
+                            <button onclick="logoutAdmin()" class="btn btn-danger">
+                                <i class="fas fa-sign-out-alt"></i> Выйти
+                            </button>
+                            <button onclick="showChangePasswordForm()" class="btn btn-warning">
+                                <i class="fas fa-key"></i> Сменить пароль
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="adminBankCards" style="margin-bottom: 2rem; background: #f8f9fa; padding: 1.5rem; border-radius: 10px;">
+                        <h4><i class="fas fa-credit-card"></i> Настройка реквизитов ВТБ</h4>
+                        <div class="form-group">
+                            <label for="adminCardNumber">Номер карты ВТБ (16 цифр)</label>
+                            <input type="text" id="adminCardNumber" placeholder="2202200123456789" maxlength="16" 
+                                   onchange="updateVtbCard(this.value)" pattern="\d{16}">
+                            <small style="color: var(--gray); display: block; margin-top: 5px;">Введите номер карты без пробелов</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="adminCardHolder">Имя получателя</label>
+                            <input type="text" id="adminCardHolder" placeholder="Иван Иванович" 
+                                   onchange="updateCardHolder(this.value)">
+                        </div>
+                        <button onclick="saveBankSettings()" class="btn" style="width: 100%;">
+                            <i class="fas fa-save"></i> Сохранить реквизиты
+                        </button>
+                    </div>
+                    
+                    <div id="requestsList" class="requests-list">
+                        <p id="noRequestsMessage">На данный момент нет новых заказов.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">RobloxServiceShop</div>
+                <div class="footer-links">
+                    <a href="#order">Заказать услугу</a>
+                    <a href="#payment">Оплата</a>
+                    <a href="#check-upload">Отправить чек</a>
+                    <a href="#admin-login">Админка</a>
+                </div>
+                <div class="copyright">
+                    &copy; 2024 RobloxServiceShop. Услуги только для Roblox. Оплата на карту ВТБ.
+                    <p style="margin-top: 5px; font-size: 0.8rem;">Для общения используйте чат в правом нижнем углу</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Модальное окно для просмотра скриншотов -->
+    <div id="imageModal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index: 10000; display: flex; justify-content: center; align-items: center;">
+        <div style="position: relative; max-width: 90%; max-height: 90%;">
+            <img id="modalImage" src="" style="max-width: 100%; max-height: 90vh; border-radius: 10px;">
+            <button onclick="closeImageModal()" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 1.5rem; cursor: pointer;">×</button>
+        </div>
+    </div>
+    
+    <div id="notification" class="notification hidden"></div>
+    
+    <script>
+        // ==================== КОНСТАНТЫ И ПЕРЕМЕННЫЕ ====================
+        const STORAGE_KEYS = {
+            REQUESTS: 'serviceRequests',
+            REQUEST_COUNTER: 'requestIdCounter',
+            ADMIN_PASSWORD: 'adminPassword',
+            BANK_CARDS: 'vtbBankCard',
+            IS_LOGGED_IN: 'isAdminLoggedIn',
+            MESSAGES: 'orderMessages',
+            UNREAD_MESSAGES: 'unreadMessagesCount'
+        };
+        
+        // Начальные данные
+        let serviceRequests = JSON.parse(localStorage.getItem(STORAGE_KEYS.REQUESTS)) || [];
+        let requestIdCounter = JSON.parse(localStorage.getItem(STORAGE_KEYS.REQUEST_COUNTER)) || 1;
+        let adminPassword = localStorage.getItem(STORAGE_KEYS.ADMIN_PASSWORD) || 'admin123';
+        let vtbCard = JSON.parse(localStorage.getItem(STORAGE_KEYS.BANK_CARDS)) || {
+            number: '2202200123456789',
+            holder: 'Иван И.'
+        };
+        let isAdminLoggedIn = localStorage.getItem(STORAGE_KEYS.IS_LOGGED_IN) === 'true';
+        let orderMessages = JSON.parse(localStorage.getItem(STORAGE_KEYS.MESSAGES)) || {};
+        let unreadMessagesCount = JSON.parse(localStorage.getItem(STORAGE_KEYS.UNREAD_MESSAGES)) || 0;
+        
+        // Переменные для текущей загрузки
+        let currentCheckOrderId = null;
+        let currentCheckImage = null;
+        let currentChatOrderId = null;
+        
+        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Загружаем реквизиты карты ВТБ
+            loadVtbCard();
+            
+            // Настраиваем обработчики
+            setupEventListeners();
+            
+            // Проверяем авторизацию
+            if (isAdminLoggedIn) {
+                showAdminPanel();
+            }
+            
+            // Обновляем номер заказа в комментарии
+            updateOrderComment();
+            
+            // Обновляем бейдж непрочитанных сообщений
+            updateUnreadMessagesBadge();
+        });
+        
+        // ==================== ОБРАБОТЧИКИ СОБЫТИЙ ====================
+        function setupEventListeners() {
+            // Форма заказа услуги
+            const orderForm = document.getElementById('serviceRequestForm');
+            if (orderForm) {
+                orderForm.addEventListener('submit', handleOrderSubmit);
+            }
+            
+            // Кнопка показа/скрытия пароля
+            const toggleBtn = document.getElementById('togglePassword');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    togglePasswordVisibility('adminPassword');
+                });
+            }
+            
+            // Автоматическое форматирование номера карты
+            const cardInput = document.getElementById('adminCardNumber');
+            if (cardInput) {
+                cardInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length > 16) value = value.substr(0, 16);
+                    e.target.value = value;
+                });
+            }
+            
+            // Ввод в чат по Enter
+            const chatInput = document.getElementById('chatMessageInput');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+            }
+            
+            // Закрытие модального окна по клику на фон
+            document.getElementById('imageModal')?.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeImageModal();
+                }
+            });
+            
+            // Закрытие окна чата при клике вне его
+            document.addEventListener('click', function(e) {
+                const chatWindow = document.getElementById('chatWindow');
+                const chatIcon = document.querySelector('.chat-icon');
+                
+                if (chatWindow && chatWindow.classList.contains('active') && 
+                    !chatWindow.contains(e.target) && 
+                    !chatIcon.contains(e.target)) {
+                    closeChatWindow();
+                }
+            });
+        }
+        
+        // ==================== ФУНКЦИИ ДЛЯ ЗАКАЗОВ ====================
+        function handleOrderSubmit(e) {
+            e.preventDefault();
+            
+            const order = {
+                id: requestIdCounter++,
+                serviceName: document.getElementById('serviceName').value,
+                gamePlace: document.getElementById('gamePlace').value,
+                serviceDescription: document.getElementById('serviceDescription').value,
+                price: parseInt(document.getElementById('price').value),
+                customerName: document.getElementById('customerName').value,
+                customerEmail: document.getElementById('customerEmail').value,
+                contactType: document.getElementById('contactType').value,
+                contactInfo: document.getElementById('contactInfo').value,
+                status: 'pending',
+                createdAt: new Date().toISOString(),
+                paymentStatus: 'waiting_confirmation',
+                paymentProofs: [],
+                comments: [],
+                adminNotes: '',
+                messages: []
+            };
+            
+            // Добавляем начальное сообщение
+            order.comments.push({
+                type: 'system',
+                message: `Заказ создан. Ожидает подтверждения администратора.`,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Создаем чат для этого заказа
+            orderMessages[order.id] = [{
+                type: 'system',
+                sender: 'system',
+                text: `Заказ #${order.id} создан. Общайтесь здесь по вопросам выполнения.`,
+                timestamp: new Date().toISOString(),
+                read: false
+            }];
+            
+            serviceRequests.push(order);
+            saveData();
+            saveMessages();
+            
+            // Очищаем форму
+            document.getElementById('serviceRequestForm').reset();
+            
+            // Показываем уведомление с номером заказа
+            showNotification(`Заказ #${order.id} создан! Номер заказа: ${order.id}. Сохраните его!`, 'success');
+            
+            // Обновляем номер заказа в комментарии
+            updateOrderComment();
+            
+            // Если админ авторизован, обновляем список
+            if (isAdminLoggedIn) {
+                renderOrders();
+            }
+            
+            // Прокручиваем к реквизитам
+            document.getElementById('payment').scrollIntoView({ behavior: 'smooth' });
+            
+            // Предлагаем открыть чат
+            setTimeout(() => {
+                showNotification(`Нажмите на иконку чата <i class="fas fa-comments"></i> в правом нижнем углу для обсуждения заказа`, 'info');
+            }, 1000);
+        }
+        
+        function updateOrderComment() {
+            const commentElement = document.getElementById('order-comment');
+            if (commentElement && requestIdCounter > 1) {
+                commentElement.textContent = `Заказ №${requestIdCounter - 1}`;
+            }
+        }
+        
+        // ==================== ФУНКЦИИ ДЛЯ КАРТЫ ВТБ ====================
+        function loadVtbCard() {
+            // Форматируем номер карты для отображения
+            const formattedNumber = formatCardNumber(vtbCard.number);
+            
+            // Обновляем отображение карты
+            document.getElementById('vtb-card').textContent = formattedNumber;
+            document.getElementById('vtb-card-plain').textContent = vtbCard.number;
+            
+            // Обновляем данные получателя
+            const cardHolderElement = document.querySelector('.card-details p:nth-child(2) span');
+            if (cardHolderElement) {
+                cardHolderElement.textContent = vtbCard.holder;
+            }
+            
+            // Заполняем поля в админке
+            if (document.getElementById('adminCardNumber')) {
+                document.getElementById('adminCardNumber').value = vtbCard.number;
+            }
+            if (document.getElementById('adminCardHolder')) {
+                document.getElementById('adminCardHolder').value = vtbCard.holder;
+            }
+        }
+        
+        function updateVtbCard(number) {
+            if (!number || number.trim() === '') return;
+            
+            // Проверяем номер карты
+            const cleanNumber = number.replace(/\D/g, '');
+            if (cleanNumber.length !== 16) {
+                showNotification('Номер карты должен содержать 16 цифр', 'error');
+                return;
+            }
+            
+            vtbCard.number = cleanNumber;
+            saveVtbCard();
+            
+            // Обновляем отображение
+            loadVtbCard();
+            
+            showNotification('Номер карты ВТБ обновлен', 'success');
+        }
+        
+        function updateCardHolder(holder) {
+            if (!holder || holder.trim() === '') return;
+            
+            vtbCard.holder = holder.trim();
+            saveVtbCard();
+            
+            // Обновляем отображение
+            loadVtbCard();
+            
+            showNotification('Имя получателя обновлено', 'success');
+        }
+        
+        function saveBankSettings() {
+            const number = document.getElementById('adminCardNumber').value;
+            const holder = document.getElementById('adminCardHolder').value;
+            
+            if (!number || number.length !== 16) {
+                showNotification('Введите корректный номер карты (16 цифр)', 'error');
+                return;
+            }
+            
+            if (!holder || holder.trim() === '') {
+                showNotification('Введите имя получателя', 'error');
+                return;
+            }
+            
+            vtbCard.number = number.replace(/\D/g, '');
+            vtbCard.holder = holder.trim();
+            
+            saveVtbCard();
+            loadVtbCard();
+            
+            showNotification('Реквизиты карты ВТБ сохранены!', 'success');
+        }
+        
+        function saveVtbCard() {
+            localStorage.setItem(STORAGE_KEYS.BANK_CARDS, JSON.stringify(vtbCard));
+        }
+        
+        function formatCardNumber(number) {
+            if (!number) return '';
+            const clean = number.replace(/\D/g, '');
+            return clean.replace(/(\d{4})/g, '$1 ').trim();
+        }
+        
+        function copyCardNumber() {
+            const cardNumber = vtbCard.number;
+            
+            navigator.clipboard.writeText(cardNumber)
+                .then(() => {
+                    showNotification('Номер карты скопирован!', 'success');
+                })
+                .catch(() => {
+                    // Альтернативный метод копирования
+                    const textarea = document.createElement('textarea');
+                    textarea.value = cardNumber;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    showNotification('Номер карты скопирован!', 'success');
+                });
+        }
+        
+        function copyAllDetails() {
+            const details = `Реквизиты для оплаты:\n` +
+                          `Банк: ВТБ\n` +
+                          `Номер карты: ${vtbCard.number}\n` +
+                          `Получатель: ${vtbCard.holder}\n` +
+                          `Тип карты: Visa / Mastercard`;
+            
+            navigator.clipboard.writeText(details)
+                .then(() => {
+                    showNotification('Все реквизиты скопированы!', 'success');
+                })
+                .catch(() => {
+                    // Альтернативный метод
+                    const textarea = document.createElement('textarea');
+                    textarea.value = details;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    showNotification('Все реквизиты скопированы!', 'success');
+                });
+        }
+        
+        // ==================== ФУНКЦИИ ДЛЯ ЗАГРУЗКИ ЧЕКОВ ====================
+        function handleCheckUpload() {
+            const fileInput = document.getElementById('checkUpload');
+            const orderIdInput = document.getElementById('uploadOrderId');
+            
+            // Проверяем номер заказа
+            const orderId = parseInt(orderIdInput.value);
+            if (!orderId || orderId < 1) {
+                showNotification('Введите корректный номер заказа', 'error');
+                return;
+            }
+            
+            // Ищем заказ
+            const order = serviceRequests.find(o => o.id === orderId);
+            if (!order) {
+                showNotification('Заказ с таким номером не найден', 'error');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            if (!file) return;
+            
+            // Проверяем тип файла
+            if (!file.type.match('image.*')) {
+                showNotification('Пожалуйста, загрузите изображение', 'error');
+                return;
+            }
+            
+            // Проверяем размер файла (макс 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification('Файл слишком большой (макс 5MB)', 'error');
+                return;
+            }
+            
+            // Сохраняем данные
+            currentCheckOrderId = orderId;
+            
+            // Читаем файл как Data URL
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentCheckImage = e.target.result;
+                
+                // Показываем превью
+                document.getElementById('previewImage').src = currentCheckImage;
+                document.getElementById('uploadPreview').classList.remove('hidden');
+                document.getElementById('uploadActions').classList.remove('hidden');
+                
+                showNotification('Изображение загружено', 'success');
+            };
+            
+            reader.readAsDataURL(file);
+        }
+        
+        function submitCheck() {
+            if (!currentCheckOrderId || !currentCheckImage) {
+                showNotification('Сначала загрузите изображение чека', 'error');
+                return;
+            }
+            
+            const order = serviceRequests.find(o => o.id === currentCheckOrderId);
+            if (!order) {
+                showNotification('Заказ не найден', 'error');
+                return;
+            }
+            
+            // Добавляем скриншот в заказ
+            if (!order.paymentProofs) order.paymentProofs = [];
+            order.paymentProofs.push(currentCheckImage);
+            
+            // Добавляем комментарий
+            order.comments.push({
+                type: 'customer',
+                message: 'Отправлен скриншот чека об оплате',
+                timestamp: new Date().toISOString()
+            });
+            
+            // Добавляем сообщение в чат
+            addMessage(currentCheckOrderId, 'customer', 'Отправил скриншот чека об оплате');
+            
+            saveData();
+            saveMessages();
+            
+            // Показываем успех
+            document.getElementById('uploadPreview').classList.add('hidden');
+            document.getElementById('uploadActions').classList.add('hidden');
+            document.getElementById('uploadSuccess').classList.remove('hidden');
+            
+            // Сбрасываем форму
+            document.getElementById('uploadOrderId').value = '';
+            document.getElementById('checkUpload').value = '';
+            currentCheckOrderId = null;
+            currentCheckImage = null;
+            
+            showNotification('Чек успешно отправлен администратору!', 'success');
+            
+            // Обновляем админ-панель если админ авторизован
+            if (isAdminLoggedIn) {
+                renderOrders();
+            }
+            
+            // Предлагаем открыть чат
+            setTimeout(() => {
+                showNotification('Откройте чат для обсуждения деталей заказа', 'info');
+            }, 500);
+        }
+        
+        function cancelUpload() {
+            document.getElementById('uploadPreview').classList.add('hidden');
+            document.getElementById('uploadActions').classList.add('hidden');
+            document.getElementById('uploadSuccess').classList.add('hidden');
+            document.getElementById('uploadOrderId').value = '';
+            document.getElementById('checkUpload').value = '';
+            currentCheckOrderId = null;
+            currentCheckImage = null;
+        }
+        
+        // ==================== ФУНКЦИИ ЧАТА ====================
+        function toggleChatWindow() {
+            const chatWindow = document.getElementById('chatWindow');
+            chatWindow.classList.toggle('active');
+            
+            if (chatWindow.classList.contains('active')) {
+                // Открываем окно чата
+                chatWindow.classList.remove('hidden');
+                setTimeout(() => {
+                    chatWindow.classList.add('active');
+                }, 10);
+                
+                // Автоматически загружаем чат если есть текущий заказ
+                if (currentChatOrderId) {
+                    document.getElementById('chatOrderId').value = currentChatOrderId;
+                    loadChat();
+                }
+            } else {
+                // Закрываем окно чата
+                closeChatWindow();
+            }
+        }
+        
+        function closeChatWindow() {
+            const chatWindow = document.getElementById('chatWindow');
+            chatWindow.classList.remove('active');
+            setTimeout(() => {
+                if (!chatWindow.classList.contains('active')) {
+                    chatWindow.classList.add('hidden');
+                }
+            }, 300);
+        }
+        
+        function loadChat() {
+            const orderId = parseInt(document.getElementById('chatOrderId').value);
+            if (!orderId || orderId < 1) {
+                showNotification('Введите корректный номер заказа', 'error');
+                return;
+            }
+            
+            const order = serviceRequests.find(o => o.id === orderId);
+            if (!order) {
+                showNotification('Заказ с таким номером не найден', 'error');
+                return;
+            }
+            
+            // Сохраняем текущий ID заказа
+            currentChatOrderId = orderId;
+            
+            // Показываем информацию о заказе
+            document.getElementById('currentOrderId').textContent = order.id;
+            document.getElementById('chatOrderStatus').textContent = getStatusText(order.status);
+            
+            // Загружаем сообщения
+            renderChatMessages(orderId);
+            
+            // Показываем поле для ввода сообщений
+            document.getElementById('chatInputArea').classList.remove('hidden');
+            
+            // Помечаем сообщения как прочитанные если это админ
+            if (isAdminLoggedIn) {
+                markMessagesAsRead(orderId);
+            }
+            
+            // Прокручиваем к последним сообщениям
+            setTimeout(() => {
+                const chatMessages = document.getElementById('chatMessages');
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 100);
+        }
+        
+        function getStatusText(status) {
+            const statuses = {
+                pending: '⏳ Ожидает подтверждения',
+                confirmed: '✅ Заказ подтвержден',
+                paid: '💰 Ожидает выполнения',
+                in_progress: '⚡ В работе',
+                completed: '🎉 Выполнен',
+                cancelled: '❌ Отменен'
+            };
+            return statuses[status] || status;
+        }
+        
+        function renderChatMessages(orderId) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messages = orderMessages[orderId] || [];
+            
+            chatMessages.innerHTML = '';
+            
+            if (messages.length === 0) {
+                chatMessages.innerHTML = `
+                    <div class="message message-system">
+                        Нет сообщений. Начните общение первым!
+                    </div>
+                `;
+                return;
+            }
+            
+            messages.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                const messageClass = msg.sender === 'admin' ? 'message-admin' : 
+                                   msg.sender === 'system' ? 'message-system' : 'message-user';
+                messageDiv.className = `message ${messageClass}`;
+                
+                const time = new Date(msg.timestamp).toLocaleTimeString('ru-RU', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                messageDiv.innerHTML = `
+                    <div>${msg.text}</div>
+                    <div class="message-time">${time}</div>
+                `;
+                
+                chatMessages.appendChild(messageDiv);
+            });
+            
+            // Прокручиваем к последнему сообщению
+            setTimeout(() => {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 50);
+        }
+        
+        function sendMessage() {
+            const orderId = currentChatOrderId || parseInt(document.getElementById('chatOrderId').value);
+            const messageInput = document.getElementById('chatMessageInput');
+            const message = messageInput.value.trim();
+            
+            if (!orderId) {
+                showNotification('Сначала загрузите чат заказа', 'error');
+                return;
+            }
+            
+            if (!message) {
+                showNotification('Введите сообщение', 'error');
+                return;
+            }
+            
+            const order = serviceRequests.find(o => o.id === orderId);
+            if (!order) {
+                showNotification('Заказ не найден', 'error');
+                return;
+            }
+            
+            // Определяем отправителя (по умолчанию клиент)
+            const sender = isAdminLoggedIn ? 'admin' : 'customer';
+            
+            // Добавляем сообщение
+            addMessage(orderId, sender, message);
+            
+            // Очищаем поле ввода
+            messageInput.value = '';
+            
+            // Обновляем чат
+            renderChatMessages(orderId);
+            
+            // Прокручиваем к последнему сообщению
+            const chatMessages = document.getElementById('chatMessages');
+            setTimeout(() => {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 50);
+            
+            showNotification('Сообщение отправлено', 'success');
+            
+            // Если сообщение от клиента, увеличиваем счетчик непрочитанных
+            if (!isAdminLoggedIn) {
+                incrementUnreadMessages();
+            }
+        }
+        
+        function addMessage(orderId, sender, text) {
+            if (!orderMessages[orderId]) {
+                orderMessages[orderId] = [];
+            }
+            
+            orderMessages[orderId].push({
+                type: 'message',
+                sender: sender,
+                text: text,
+                timestamp: new Date().toISOString(),
+                read: sender === 'admin' // Сообщения от админа считаются прочитанными
+            });
+            
+            saveMessages();
+        }
+        
+        function saveMessages() {
+            localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(orderMessages));
+        }
+        
+        // ==================== ФУНКЦИИ АДМИН ПАНЕЛИ ====================
+        function loginAdmin() {
+            const password = document.getElementById('adminPassword').value;
+            
+            if (password === adminPassword) {
+                isAdminLoggedIn = true;
+                localStorage.setItem(STORAGE_KEYS.IS_LOGGED_IN, 'true');
+                showAdminPanel();
+                document.getElementById('adminPassword').value = '';
+                showNotification('Вход выполнен успешно!', 'success');
+                
+                // Сбрасываем счетчик непрочитанных сообщений при входе админа
+                resetUnreadMessages();
+            } else {
+                showNotification('Неверный пароль', 'error');
+            }
+        }
+        
+        function showChangePasswordForm() {
+            document.getElementById('adminLoginForm').classList.add('hidden');
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('changePasswordForm').classList.remove('hidden');
+        }
+        
+        function cancelChangePassword() {
+            document.getElementById('changePasswordForm').classList.add('hidden');
+            document.getElementById('adminLoginForm').classList.remove('hidden');
+            document.getElementById('oldPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        }
+        
+        function changeAdminPassword() {
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (!oldPassword) {
+                showNotification('Введите старый пароль', 'error');
+                return;
+            }
+            
+            if (oldPassword !== adminPassword) {
+                showNotification('Старый пароль неверен', 'error');
+                return;
+            }
+            
+            if (!newPassword || newPassword.length < 6) {
+                showNotification('Новый пароль должен содержать минимум 6 символов', 'error');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                showNotification('Пароли не совпадают', 'error');
+                return;
+            }
+            
+            adminPassword = newPassword;
+            localStorage.setItem(STORAGE_KEYS.ADMIN_PASSWORD, adminPassword);
+            
+            showNotification('Пароль успешно изменен!', 'success');
+            
+            // Очищаем поля и возвращаемся
+            document.getElementById('oldPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            
+            // Показываем форму входа
+            cancelChangePassword();
+        }
+        
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            localStorage.setItem(STORAGE_KEYS.IS_LOGGED_IN, 'false');
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('adminLoginForm').classList.remove('hidden');
+            showNotification('Вы вышли из системы', 'info');
+        }
+        
+        function showAdminPanel() {
+            document.getElementById('adminLoginForm').classList.add('hidden');
+            document.getElementById('changePasswordForm').classList.add('hidden');
+            document.getElementById('adminPanel').classList.remove('hidden');
+            renderOrders();
+        }
+        
+        function togglePasswordVisibility(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const toggleIcon = passwordInput.parentNode.querySelector('.password-toggle i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.className = 'fas fa-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.className = 'fas fa-eye';
+            }
+        }
+        
+        // ==================== РЕНДЕРИНГ ЗАКАЗОВ ====================
+        function renderOrders() {
+            const container = document.getElementById('requestsList');
+            const noRequests = document.getElementById('noRequestsMessage');
+            
+            if (!serviceRequests || serviceRequests.length === 0) {
+                noRequests.classList.remove('hidden');
+                container.innerHTML = '';
+                container.appendChild(noRequests);
+                updateRequestCount();
+                return;
+            }
+            
+            noRequests.classList.add('hidden');
+            
+            // Сортируем: сначала новые заказы
+            const sortedOrders = [...serviceRequests].sort((a, b) => 
+                new Date(b.createdAt) - new Date(a.createdAt)
+            );
+            
+            container.innerHTML = '';
+            
+            sortedOrders.forEach(order => {
+                const orderElement = createOrderElement(order);
+                container.appendChild(orderElement);
+            });
+            
+            updateRequestCount();
+        }
+        
+        function createOrderElement(order) {
+            const div = document.createElement('div');
+            div.className = 'request-item';
+            div.id = `order-${order.id}`;
+            
+            // Определяем статус и стиль
+            const statusInfo = getStatusInfo(order.status);
+            const contactIcon = getContactIcon(order.contactType);
+            
+            // Форматируем дату
+            const orderDate = new Date(order.createdAt);
+            const formattedDate = orderDate.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            // Получаем количество непрочитанных сообщений
+            const unreadCount = getUnreadMessagesCount(order.id);
+            
+            div.innerHTML = `
+                <div class="request-header">
+                    <div class="request-title">
+                        Заказ #${order.id}: ${order.serviceName}
+                        ${unreadCount > 0 ? `<span style="background: var(--danger); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.8rem; margin-left: 10px; white-space: nowrap;">${unreadCount} новых</span>` : ''}
+                    </div>
+                    <div class="request-price">${order.price}₽</div>
+                </div>
+                
+                <div class="request-description">
+                    <strong>Плейс Roblox:</strong> <a href="${order.gamePlace}" target="_blank" style="color: var(--roblox); word-break: break-all;">${order.gamePlace}</a><br>
+                    <strong>Описание:</strong> ${order.serviceDescription}
+                </div>
+                
+                <div class="request-contact">
+                    ${contactIcon}
+                    <span><strong>Клиент:</strong> ${order.customerName}</span>
+                </div>
+                
+                <div class="request-contact">
+                    <i class="fas fa-envelope"></i>
+                    <span>${order.customerEmail}</span>
+                </div>
+                
+                <div class="request-contact">
+                    <i class="fas fa-comments"></i>
+                    <span><strong>Контакты:</strong> ${order.contactInfo} (${order.contactType})</span>
+                </div>
+                
+                <div class="request-status ${statusInfo.class}">
+                    ${statusInfo.text}
+                </div>
+                
+                ${order.paymentStatus === 'paid' ? `
+                <div class="request-status status-payment-received" style="margin-top: 5px;">
+                    ✅ Оплата получена
+                </div>
+                ` : ''}
+                
+                ${getOrderActions(order)}
+                
+                ${order.paymentProofs && order.paymentProofs.length > 0 ? `
+                <div class="payment-proof-section">
+                    <h4><i class="fas fa-receipt"></i> Скриншоты оплаты:</h4>
+                    <div class="proof-images">
+                        ${order.paymentProofs.map((proof, index) => `
+                            <img src="${proof}" alt="Скриншот оплаты ${index + 1}" 
+                                 class="proof-image" 
+                                 onclick="showImageModal('${proof}')">
+                        `).join('')}
+                    </div>
+                </div>
+                ` : ''}
+                
+                ${order.comments && order.comments.length > 0 ? `
+                <div style="margin-top: 1rem; padding: 0.5rem; background: #f8f9fa; border-radius: 5px;">
+                    <strong><i class="fas fa-comment"></i> Комментарии:</strong>
+                    ${order.comments.slice(-3).map(comment => `
+                        <div style="margin-top: 5px; padding: 5px; border-left: 3px solid ${comment.type === 'admin' ? '#007bff' : '#6c757d'};">
+                            <small>${new Date(comment.timestamp).toLocaleString()}:</small><br>
+                            ${comment.message}
+                        </div>
+                    `).join('')}
+                </div>
+                ` : ''}
+                
+                <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="openChatForOrder(${order.id})" class="btn" style="flex: 1; min-width: 150px;">
+                        <i class="fas fa-comments"></i> Открыть чат
+                    </button>
+                    <button onclick="copyOrderLink(${order.id})" class="btn" style="flex: 1; min-width: 150px; background: var(--warning);">
+                        <i class="fas fa-link"></i> Ссылка на заказ
+                    </button>
+                </div>
+                
+                <div style="margin-top: 10px; font-size: 0.85rem; color: #666;">
+                    <i class="far fa-clock"></i> Создан: ${formattedDate}
+                </div>
+            `;
+            
+            return div;
+        }
+        
+        function getUnreadMessagesCount(orderId) {
+            const messages = orderMessages[orderId] || [];
+            // Считаем только сообщения от клиента, которые еще не прочитаны админом
+            return messages.filter(msg => msg.sender === 'customer' && !msg.read).length;
+        }
+        
+        function getStatusInfo(status) {
+            const statuses = {
+                pending: { text: '⏳ Ожидает подтверждения', class: 'status-pending' },
+                confirmed: { text: '✅ Заказ подтвержден', class: 'status-waiting-payment' },
+                paid: { text: '💰 Ожидает выполнения', class: 'status-payment-received' },
+                in_progress: { text: '⚡ В работе', class: 'status-in-progress' },
+                completed: { text: '🎉 Выполнен', class: 'status-completed' },
+                cancelled: { text: '❌ Отменен', class: 'status-cancelled' }
+            };
+            return statuses[status] || statuses.pending;
+        }
+        
+        function getContactIcon(contactType) {
+            const icons = {
+                discord: '<i class="fab fa-discord"></i>',
+                telegram: '<i class="fab fa-telegram"></i>',
+                email: '<i class="fas fa-envelope"></i>'
+            };
+            return icons[contactType] || '<i class="fas fa-user"></i>';
+        }
+        
+        function getOrderActions(order) {
+            let actions = '';
+            
+            if (order.status === 'pending') {
+                actions = `
+                    <div class="request-actions">
+                        <button onclick="confirmOrder(${order.id})" class="btn btn-success">
+                            <i class="fas fa-check"></i> Подтвердить заказ
+                        </button>
+                        <button onclick="cancelOrder(${order.id})" class="btn btn-danger">
+                            <i class="fas fa-times"></i> Отклонить
+                        </button>
+                        <button onclick="sendPaymentDetails(${order.id})" class="btn">
+                            <i class="fas fa-paper-plane"></i> Отправить реквизиты
+                        </button>
+                    </div>
+                `;
+            } else if (order.status === 'confirmed') {
+                actions = `
+                    <div class="request-actions">
+                        <button onclick="markAsPaid(${order.id})" class="btn btn-success">
+                            <i class="fas fa-money-check-alt"></i> Отметить как оплаченный
+                        </button>
+                        <button onclick="openChatForOrder(${order.id})" class="btn">
+                            <i class="fas fa-comments"></i> Написать в чат
+                        </button>
+                    </div>
+                `;
+            } else if (order.status === 'paid') {
+                actions = `
+                    <div class="request-actions">
+                        <button onclick="startOrder(${order.id})" class="btn">
+                            <i class="fas fa-play"></i> Начать выполнение
+                        </button>
+                        <button onclick="openChatForOrder(${order.id})" class="btn">
+                            <i class="fas fa-comments"></i> Написать в чат
+                        </button>
+                    </div>
+                `;
+            } else if (order.status === 'in_progress') {
+                actions = `
+                    <div class="request-actions">
+                        <button onclick="completeOrder(${order.id})" class="btn btn-success">
+                            <i class="fas fa-check-circle"></i> Завершить заказ
+                        </button>
+                        <button onclick="openChatForOrder(${order.id})" class="btn">
+                            <i class="fas fa-comments"></i> Написать в чат
+                        </button>
+                    </div>
+                `;
+            } else if (order.status === 'completed') {
+                actions = `
+                    <div class="request-actions">
+                        <span class="btn btn-success" style="background-color: #d4edda; color: #155724; cursor: default;">
+                            <i class="fas fa-check-circle"></i> Заказ выполнен
+                        </span>
+                        <button onclick="openChatForOrder(${order.id})" class="btn">
+                            <i class="fas fa-comments"></i> Открыть чат
+                        </button>
+                    </div>
+                `;
+            }
+            
+            return actions;
+        }
+        
+        function openChatForOrder(orderId) {
+            // Открываем окно чата
+            if (!document.getElementById('chatWindow').classList.contains('active')) {
+                toggleChatWindow();
+            }
+            
+            // Устанавливаем номер заказа и загружаем чат
+            document.getElementById('chatOrderId').value = orderId;
+            loadChat();
+        }
+        
+        function copyOrderLink(orderId) {
+            const link = window.location.origin + window.location.pathname;
+            const message = `Заказ #${orderId}\n\nДля обсуждения этого заказа:\n1. Перейдите по ссылке: ${link}\n2. Нажмите на иконку чата в правом нижнем углу\n3. Введите номер заказа: ${orderId}`;
+            
+            navigator.clipboard.writeText(message)
+                .then(() => {
+                    showNotification('Информация о заказе скопирована! Отправьте ее клиенту.', 'success');
+                })
+                .catch(() => {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = message;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    showNotification('Информация о заказе скопирована! Отправьте ее клиенту.', 'success');
+                });
+        }
+        
+        // ==================== ДЕЙСТВИЯ С ЗАКАЗАМИ ====================
+        function confirmOrder(orderId) {
+            const order = serviceRequests.find(o => o.id === orderId);
+            if (!order) return;
+            
+            order.status = 'confirmed';
+            order.comments.push({
+                type: 'admin',
+                message: 'Заказ подтвержден. Ожидаю оплаты на карту ВТБ.',
+                timestamp: new Date().toISOString()
+            });
+            
+            // Добавляем сообщение в чат
+            addMessage(orderId, 'admin', 'Заказ подтвержден. Пожалуйста, оплатите по реквизитам и отправьте чек.');
+            
+            saveData();
+            saveMessages();
+            renderOrders();
+            showNotification(`Заказ #${orderId} подтвержден`, 'success');
+        }
+        
+        function cancelOrder(orderId) {
+            const order = serviceRequests.find(o => o.id === orderId);
+            if (!order) return;
+            
+            order.status = 'cancelled';
+            order.comments.push({
+                type: 'admin',
+                message: 'Заказ отменен.',
+                timestamp: new Date().toISOString()
+            });
+            
+            // Добавляем сообщение в чат
+            addMessage(orderId, 'admin', 'Заказ отменен.');
+            
+            saveData();
+            saveMessages();
+            renderOrders();
+            showNotification(`Заказ #${orderId} отменен`, 'info');
+        }
+        
+        function sendPaymentDetails(orderId) {
+            const order = serviceRequests.find(o => o.id === orderId);
+            if (!order) return;
+            
+            const message = `Заказ #${orderId} на сумму ${order.price}₽\n\n` +
+                          `Реквизиты для оплаты:\n` +
+                          `Банк: ВТБ\n` +
+                          `Номер карты: ${vtbCard.number}\n` +
+                          `Получатель: ${vtbCard.holder}\n\n` +
+                          `В комментарии к переводу укажите: "Заказ №${orderId}"\n` +
+                          `После оплаты отправьте чек через раздел "Отправить чек" на сайте.`;
+            
+            // Создаем временный textarea для копирования
+            const textarea = document.createElement('textarea');
+            textarea.value = message;
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            textarea.style.top = '-9999px';
+            document.body.appendChild(textarea);
+            
+            try {
+                // Выделяем текст
+                textarea.select();
+                textarea.setSelectionRange(0, 99999);
+                
+                // Копируем
+                const successful = document.execCommand('copy');
+                
+                if (successful) {
+                    showNotification('Реквизиты скопированы! Отправьте их клиенту.', 'success');
+                    
+                    order.comments.push({
+                        type: 'admin',
+                        message: 'Реквизиты карты ВТБ отправлены клиенту.',
+                        timestamp: new Date().toISOString()
+                    });
+                    
+                    // Добавляем сообщение в чат
+                    addMessage(orderId, 'admin', 'Отправил реквизиты для оплаты. Пожалуйста, оплатите и отправьте чек.');
+                    
+                    saveData();
+                    saveMessages();
+                    renderOrders();
+                } else {
+                    showNotification('Нажмите Ctrl+C чтобы скопировать реквизиты', 'info');
+                }
+            } catch (err) {
+                console.error('Ошибка копирования:', err);
+                showNotification('Нажмите Ctrl+C чтобы скопировать реквизиты', 'info');
+            } finally {
+                // Удаляем временный элемент
+                document.body.removeChild(textarea);
+            }
+        }
+        
+        function markAsPaid(orderId) {
+            const order = serviceRequests.find(o => o.id === orderId);
+            if (!order) return;
+            
+            order.status = 'paid';
+            order.paymentStatus = 'paid';
+            order.comments.push({
+                type: 'admin',
+                message: 'Оплата подтверждена. Заказ готов к выполнению.',
+                timestamp: new Date().toISOString()
+            });
+            
+            // Добавляем сообщение в чат
+            addMessage(orderId, 'admin', 'Оплата подтверждена! Начинаю выполнение заказа.');
+            
+            saveData();
+            saveMessages();
+            renderOrders();
+            showNotification(`Заказ #${orderId} отмечен как оплаченный`, 'success');
+            
+            // Открываем чат для этого заказа
+            openChatForOrder(orderId);
+        }
+        
+        function startOrder(orderId) {
+            const order = serviceRequests.find(o => o.id === orderId);
+            if (!order) return;
+            
+            order.status = 'in_progress';
+            order.comments.push({
+                type: 'admin',
+                message: 'Начал выполнение заказа.',
+                timestamp: new Date().toISOString()
+            });
+            
+            // Добавляем сообщение в чат
+            addMessage(orderId, 'admin', 'Начинаю выполнение заказа. Буду держать в курсе!');
+            
+            saveData();
+            saveMessages();
+            renderOrders();
+            showNotification(`Заказ #${orderId} взят в работу`, 'info');
+            
+            // Открываем чат для этого заказа
+            openChatForOrder(orderId);
+        }
+        
+        function completeOrder(orderId) {
+            const order = serviceRequests.find(o => o.id === orderId);
+            if (!order) return;
+            
+            order.status = 'completed';
+            order.comments.push({
+                type: 'admin',
+                message: 'Заказ выполнен успешно.',
+                timestamp: new Date().toISOString()
+            });
+            
+            // Добавляем сообщение в чат
+            addMessage(orderId, 'admin', 'Заказ выполнен! Спасибо за заказ!');
+            
+            saveData();
+            saveMessages();
+            renderOrders();
+            showNotification(`Заказ #${orderId} завершен`, 'success');
+            
+            // Открываем чат для этого заказа
+            openChatForOrder(orderId);
+        }
+        
+        // ==================== МОДАЛЬНОЕ ОКНО ДЛЯ ИЗОБРАЖЕНИЙ ====================
+        function showImageModal(imageUrl) {
+            document.getElementById('modalImage').src = imageUrl;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+        
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+        
+        // ==================== ФУНКЦИИ ДЛЯ ИКОНКИ ЧАТА ====================
+        function incrementUnreadMessages() {
+            if (!isAdminLoggedIn) {
+                unreadMessagesCount++;
+                localStorage.setItem(STORAGE_KEYS.UNREAD_MESSAGES, JSON.stringify(unreadMessagesCount));
+                updateUnreadMessagesBadge();
+            }
+        }
+        
+        function resetUnreadMessages() {
+            unreadMessagesCount = 0;
+            localStorage.setItem(STORAGE_KEYS.UNREAD_MESSAGES, JSON.stringify(unreadMessagesCount));
+            updateUnreadMessagesBadge();
+            
+            // Помечаем все сообщения как прочитанные
+            for (const orderId in orderMessages) {
+                markMessagesAsRead(orderId);
+            }
+        }
+        
+        function markMessagesAsRead(orderId) {
+            if (orderMessages[orderId]) {
+                orderMessages[orderId].forEach(msg => {
+                    if (msg.sender === 'customer') {
+                        msg.read = true;
+                    }
+                });
+                saveMessages();
+            }
+        }
+        
+        function updateUnreadMessagesBadge() {
+            const badge = document.getElementById('unreadMessagesBadge');
+            if (badge) {
+                if (unreadMessagesCount > 0) {
+                    badge.textContent = unreadMessagesCount > 99 ? '99+' : unreadMessagesCount;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+        }
+        
+        // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
+        function updateRequestCount() {
+            const pendingCount = serviceRequests.filter(req => req.status === 'pending').length;
+            const totalCount = serviceRequests.length;
+            
+            const countElement = document.getElementById('requestCount');
+            if (countElement) {
+                countElement.textContent = `${totalCount} (${pendingCount} новых)`;
+            }
+        }
+        
+        function saveData() {
+            localStorage.setItem(STORAGE_KEYS.REQUESTS, JSON.stringify(serviceRequests));
+            localStorage.setItem(STORAGE_KEYS.REQUEST_COUNTER, JSON.stringify(requestIdCounter));
+        }
+        
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification notification-${type}`;
+            notification.classList.remove('hidden');
+            
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 3000);
+        }
+        
+        // Глобальные функции
+        window.copyCardNumber = copyCardNumber;
+        window.copyAllDetails = copyAllDetails;
+        window.handleCheckUpload = handleCheckUpload;
+        window.submitCheck = submitCheck;
+        window.cancelUpload = cancelUpload;
+        window.loadChat = loadChat;
+        window.sendMessage = sendMessage;
+        window.showImageModal = showImageModal;
+        window.closeImageModal = closeImageModal;
+        window.loginAdmin = loginAdmin;
+        window.showChangePasswordForm = showChangePasswordForm;
+        window.cancelChangePassword = cancelChangePassword;
+        window.changeAdminPassword = changeAdminPassword;
+        window.logoutAdmin = logoutAdmin;
+        window.confirmOrder = confirmOrder;
+        window.cancelOrder = cancelOrder;
+        window.sendPaymentDetails = sendPaymentDetails;
+        window.markAsPaid = markAsPaid;
+        window.startOrder = startOrder;
+        window.completeOrder = completeOrder;
+        window.openChatForOrder = openChatForOrder;
+        window.copyOrderLink = copyOrderLink;
+        window.toggleChatWindow = toggleChatWindow;
+        window.closeChatWindow = closeChatWindow;
+    </script>
+</body>
+</html>
